@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remanejamento 2026/2027 — Análise por Microárea · CRE 01</title>
+<style>
+  :root {
+    --azul: #0081AF;
+    --azul-escuro: #005f82;
+    --azul-claro: #e6f4f9;
+    --azul-medio: #b3dced;
+    --cinza-fundo: #f5f7f9;
+    --cinza-borda: #dde3e8;
+    --cinza-texto: #4a5568;
+    --cinza-leve: #f0f4f7;
+    --branco: #ffffff;
+    --verde: #2d7a4f;
+    --verde-claro: #e8f5ee;
+    --laranja: #c05621;
+    --laranja-claro: #fff3eb;
+    --texto: #1a202c;
+    --fonte: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--fonte);
+    background: var(--cinza-fundo);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--azul);
+    color: white;
+    padding: 18px 24px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-logo {
+    width: 36px; height: 36px;
+    background: white;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 900; color: var(--azul);
+    flex-shrink: 0;
+  }
+  .header-text h1 { font-size: 15px; font-weight: 700; line-height: 1.2; }
+  .header-text p { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .header-right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 10px;
+  }
+  #status-badge {
+    font-size: 11px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+  #btn-atualizar {
+    background: white;
+    color: var(--azul);
+    border: none;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  #btn-atualizar:hover { opacity: .85; }
+  #btn-atualizar:disabled { opacity: .5; cursor: default; }
+
+  /* FILTROS */
+  .filtros-wrap {
+    background: white;
+    border-bottom: 1px solid var(--cinza-borda);
+    padding: 14px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .filtro-grupo {
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 160px; flex: 1;
+  }
+  .filtro-grupo label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--cinza-texto);
+  }
+  .filtro-grupo select {
+    border: 1px solid var(--cinza-borda);
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 13px;
+    color: var(--texto);
+    background: var(--cinza-fundo);
+    cursor: pointer;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .filtro-grupo select:focus { border-color: var(--azul); }
+  #btn-limpar {
+    background: none;
+    border: 1px solid var(--cinza-borda);
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 13px;
+    color: var(--cinza-texto);
+    cursor: pointer;
+    white-space: nowrap;
+    align-self: flex-end;
+    transition: all .15s;
+  }
+  #btn-limpar:hover { border-color: var(--azul); color: var(--azul); }
+
+  /* RESUMO */
+  .resumo-bar {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--cinza-texto);
+    border-bottom: 1px solid var(--cinza-borda);
+    background: var(--cinza-leve);
+    flex-wrap: wrap;
+  }
+  .resumo-bar strong { color: var(--azul); font-size: 15px; }
+  .resumo-chip {
+    background: var(--azul-claro);
+    color: var(--azul-escuro);
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* CONTEÚDO */
+  main { padding: 16px 20px 40px; }
+
+  /* BLOCO MICROÁREA */
+  .microarea-bloco {
+    margin-bottom: 28px;
+  }
+  .microarea-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--azul);
+  }
+  .microarea-badge {
+    background: var(--azul);
+    color: white;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .microarea-nome {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--azul-escuro);
+  }
+  .microarea-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--cinza-texto);
+  }
+
+  /* CARD ESCOLA ORIGEM */
+  .escola-card {
+    background: white;
+    border: 1px solid var(--cinza-borda);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+  .escola-header {
+    background: var(--azul-claro);
+    border-bottom: 1px solid var(--azul-medio);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .escola-nome {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--azul-escuro);
+    flex: 1;
+    min-width: 180px;
+  }
+  .tag {
+    font-size: 11px;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tag-grup { background: #e2e8f0; color: #2d3748; }
+  .tag-bairro { background: #ebf8ff; color: #2b6cb0; }
+
+  /* TABELA */
+  .tabela-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  thead tr {
+    background: var(--cinza-fundo);
+  }
+  th {
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--cinza-texto);
+    border-bottom: 1px solid var(--cinza-borda);
+    white-space: nowrap;
+  }
+  th.num, td.num { text-align: right; }
+  td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--cinza-borda);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--cinza-leve); }
+
+  .destino-nome { font-weight: 500; color: var(--texto); }
+
+  /* NÚMEROS */
+  .n1 { font-weight: 700; color: var(--azul); }
+  .n-zero { color: #cbd5e0; }
+  .n-dash { color: #e2e8f0; }
+
+  /* PRIORIDADE */
+  .pri-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600;
+    border-radius: 4px; padding: 2px 7px;
+  }
+  .pri-espec { background: var(--laranja-claro); color: var(--laranja); }
+  .pri-irmao { background: var(--verde-claro); color: var(--verde); }
+  .pri-zero { color: #cbd5e0; font-size: 12px; }
+
+  /* LOADING / VAZIO */
+  .estado {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--cinza-texto);
+  }
+  .estado .icon { font-size: 40px; margin-bottom: 12px; }
+  .estado p { font-size: 14px; }
+  .spinner {
+    display: inline-block;
+    width: 32px; height: 32px;
+    border: 3px solid var(--azul-medio);
+    border-top-color: var(--azul);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    header { flex-wrap: wrap; }
+    .filtros-wrap { flex-direction: column; }
+    .filtro-grupo { min-width: 100%; }
+    main { padding: 12px 10px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">CRE</div>
+  <div class="header-text">
+    <h1>Remanejamento 2026/2027 — Preferências por Microárea</h1>
+    <p>1ª Coordenadoria Regional de Educação · Rio de Janeiro</p>
+  </div>
+  <div class="header-right">
+    <span id="status-badge">Carregando…</span>
+    <button id="btn-atualizar" onclick="carregarDados()" disabled>⟳ Atualizar</button>
+  </div>
+</header>
+
+<div class="filtros-wrap">
+  <div class="filtro-grupo">
+    <label>Microárea</label>
+    <select id="f-microarea" onchange="aplicarFiltros()">
+      <option value="">Todas</option>
+    </select>
+  </div>
+  <div class="filtro-grupo">
+    <label>Bairro</label>
+    <select id="f-bairro" onchange="aplicarFiltros()">
+      <option value="">Todos</option>
+    </select>
+  </div>
+  <div class="filtro-grupo">
+    <label>Escola de Origem</label>
+    <select id="f-origem" onchange="aplicarFiltros()">
+      <option value="">Todas</option>
+    </select>
+  </div>
+  <div class="filtro-grupo">
+    <label>Grupamento</label>
+    <select id="f-grupamento" onchange="aplicarFiltros()">
+      <option value="">Todos</option>
+    </select>
+  </div>
+  <div class="filtro-grupo">
+    <label>Escola de Destino</label>
+    <select id="f-destino" onchange="aplicarFiltros()">
+      <option value="">Todas</option>
+    </select>
+  </div>
+  <button id="btn-limpar" onclick="limparFiltros()">✕ Limpar filtros</button>
+</div>
+
+<div class="resumo-bar" id="resumo-bar">
+  <span>Carregando dados…</span>
+</div>
+
+<main id="conteudo">
+  <div class="estado">
+    <div class="spinner"></div>
+    <p>Buscando respostas da planilha…</p>
+  </div>
+</main>
+
+<script>
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJD0eH88Jo2shR0WTDbRo3UJXssWnkmUWUcErZ4G4g_rGZy1EczQ67ap7VZHXJoJ2gTO5YEd4tqThB/pub?gid=2005832088&single=true&output=csv';
+
+// Microáreas oficiais
+const MICROAREAS = {
+  'CIEP AVENIDA DOS DESFILES I': ['1.9','CIDADE NOVA'],
+  'CIEP AVENIDA DOS DESFILES II': ['1.9','CIDADE NOVA'],
+  'CIEP HENFIL': ['1.1','CAJU'],
+  'CIEP JOSÉ PEDRO VARELA': ['1.7','CENTRO'],
+  'CM ADALBERTO ISMAEL DE SOUZA': ['1.3','SÃO CRISTÓVÃO'],
+  'CM ALDEIA DOS CURUMINS': ['1.7','CENTRO'],
+  'CM ANA MARIA DA CRUZ SILVA': ['1.9','CIDADE NOVA'],
+  'CM ARARA AZUL': ['1.2','BENFICA'],
+  'CM ARCO-ÍRIS': ['1.7','CENTRO'],
+  'CM BRINCADEIRAS DE CRIANÇA': ['1.8','CATUMBI'],
+  'CM CAMPOS DA PAZ': ['1.10','RIO COMPRIDO'],
+  'CM CLEMENTE FERREIRA': ['1.1','CAJU'],
+  'CM DEPUTADO LUIZ EDUARDO DE MAGALHÃES': ['1.2','BENFICA'],
+  'CM DIREITOS HUMANOS': ['1.11','RIO COMPRIDO'],
+  'CM EDUARDO MOREIRA DOS SANTOS': ['1.3','MANGUEIRA'],
+  'CM ESPAÇO LIVRE DA CRIANÇA': ['1.9','ESTÁCIO'],
+  'CM ESTÁCIO DE SÁ': ['1.9','ESTÁCIO'],
+  'CM FALLET': ['1.11','SANTA TERESA'],
+  'CM FRANCISCO ALVES': ['1.4','SÃO CRISTÓVÃO'],
+  'CM GEORGE SAVALLA GOMES - PALHAÇO CAREQUINHA': ['1.7','CENTRO'],
+  'CM HOMERO JOSÉ DOS SANTOS': ['1.3','MANGUEIRA'],
+  'CM JOSÉ MARINHO DE OLIVEIRA': ['1.11','SANTA TERESA'],
+  'CM LADEIRA DOS FUNCIONÁRIOS': ['1.1','CAJU'],
+  'CM NAÇÃO MANGUEIRENSE': ['1.3','MANGUEIRA'],
+  'CM QUINTA DO CAJU': ['1.1','CAJU'],
+  'CM SAMORA MACHEL': ['1.2','BENFICA'],
+  'CM SEMPRE VIDA P. CONQUISTA': ['1.1','CAJU'],
+  'CM SEMPRE VIDA SANTO ANTÔNIO DE PÁDUA': ['1.9','ESTÁCIO'],
+  'CM SENNINHA': ['1.1','CAJU'],
+  'CM SONHO INFANTIL': ['1.10','RIO COMPRIDO'],
+  'CM TIA DORA': ['1.6','SANTO CRISTO'],
+  'CM VASQUINHO': ['1.4','SÃO CRISTÓVÃO'],
+  'CM VIRGÍNIA LEMOS': ['1.1','SÃO CRISTÓVÃO'],
+  'CM VOVÓ LUCÍOLA': ['1.3','MANGUEIRA'],
+  'CP CASA MATERNAL CORAÇÃO DE MÃE': ['1.10','RIO COMPRIDO'],
+  'CP CENTRO CULTURAL MONTESSORI - SÃO CRISTÓVÃO': ['1.2','SÃO CRISTÓVÃO'],
+  'CP CRECHE COMUNITÁRIA ANITA WAY': ['1.5','SANTO CRISTO'],
+  'CP CRECHE DO TUIUTI': ['1.2','BENFICA'],
+  'CP CRECHE MARIA EDUARDA - CREMED': ['1.10','RIO COMPRIDO'],
+  'CP CRECHE MARIA EDUARADA - CREMED': ['1.10','RIO COMPRIDO'],
+  'CP EDUCANDÁRIO NOSSA SENHORA DE NAZARÉ': ['1.8','CATUMBI'],
+  'CP CANTINHO FELIZ': ['1.11','SANTA TERESA'],
+  'EDI ANTÔNIO RAPOSO TAVARES': ['1.6','GAMBOA'],
+  'EDI BEATRIZ VICÊNCIA BANDEIRA RYFF': ['1.9','ESTÁCIO'],
+  'EDI CAMPOS SALLES': ['1.7','CENTRO'],
+  'EDI DOIS DE JULHO': ['1.2','SÃO CRISTÓVÃO'],
+  'EDI FUNDAÇÃO LEÃO XIII': ['1.9','ESTÁCIO'],
+  'EDI HELOÍSA MARINHO': ['1.11','SANTA TERESA'],
+  'EDI LILY MARINHO': ['1.8','SANTA TERESA'],
+  'EDI MACHADO DE ASSIS': ['1.5','SANTO CRISTO'],
+  'EDI MARIA LUIZA NOBRE - TIA LUIZINHA': ['1.8','CATUMBI'],
+  'EDI MORRO DOS TELÉGRAFOS': ['1.3','MANGUEIRA'],
+  'EDI PARQUE DA ALEGRIA': ['1.1','SÃO CRISTÓVÃO'],
+  'EDI PROFESSORA DAYSE MALAGOLE': ['1.4','SÃO CRISTÓVÃO'],
+  'EDI PROFESSORA SIMONE SOUSA PIMENTEL': ['1.10','RIO COMPRIDO'],
+  'EDI RACHEL DE QUEIROZ': ['1.7','CIDADE NOVA'],
+  'EDI ZÉLIA GATTAI AMADO': ['1.11','RIO COMPRIDO'],
+  'EM ALICE DO AMARAL PEIXOTO': ['1.2','BENFICA'],
+  'EM BENJAMIM CONSTANT': ['1.5','SANTO CRISTO'],
+  'EM CALOUSTE GULBENKIAN': ['1.7','CENTRO'],
+  'EM CANADÁ': ['1.9','ESTÁCIO'],
+  'EM CARDEAL LEME': ['1.2','BENFICA'],
+  'EM CELESTINO DA SILVA': ['1.7','CENTRO'],
+  'EM DARCY VARGAS': ['1.6','GAMBOA'],
+  'EM DO CATUMBI': ['1.9','CATUMBI'],
+  'EM EDMUNDO BITTENCOURT': ['1.2','BENFICA'],
+  'EM ESTADOS UNIDOS': ['1.8','CATUMBI'],
+  'EM FELIX MIELLI VENERANDO': ['1.1','CAJU'],
+  'EM FLORIANO PEIXOTO': ['1.4','SÃO CRISTÓVÃO'],
+  'EM FRANCISCO BENJAMIN GALLOTTI': ['1.5','SANTO CRISTO'],
+  'EM GENERAL MITRE': ['1.5','SANTO CRISTO'],
+  'EM GONZAGA DA GAMA FILHO': ['1.2','BENFICA'],
+  'EM GONÇALVES DIAS': ['1.4','SÃO CRISTÓVÃO'],
+  'EM GUATEMALA': ['1.7','CENTRO'],
+  'EM HUMBERTO DE CAMPOS': ['1.3','MANGUEIRA'],
+  'EM JENNY GOMES': ['1.10','PRAÇA DA BANDEIRA'],
+  'EM JOSUE DE SOUSA MONTELLO': ['1.4','SÃO CRISTÓVÃO'],
+  'EM JOSÉ MOREIRA DA SILVA': ['1.3','MANGUEIRA'],
+  'EM JOÃO DE CAMARGO': ['1.4','SÃO CRISTÓVÃO'],
+  'EM JUAN ANTONIO SAMARANCH': ['1.11','SANTA TERESA'],
+  'EM JULIA LOPES DE ALMEIDA': ['1.8','SANTA TERESA'],
+  'EM MACHADO DE ASSIS': ['1.8','SANTA TERESA'],
+  'EM MARECHAL ESPERIDIÃO ROSAS': ['1.1','CAJU'],
+  'EM MARECHAL MASCARENHAS DE MORAES': ['1.1','CAJU'],
+  'EM MARECHAL TROMPOWSKY': ['1.4','SÃO CRISTÓVÃO'],
+  'EM MARIO CLAUDIO': ['1.10','RIO COMPRIDO'],
+  'EM MEM DE SÁ': ['1.10','RIO COMPRIDO'],
+  'EM MESTRE WALDEMIRO': ['1.4','SÃO CRISTÓVÃO'],
+  'EM NEUMA GONÇALVES DA SILVA - DONA NEUMA': ['0','BENFICA'],
+  'EM NILO PEÇANHA': ['1.4','SÃO CRISTÓVÃO'],
+  'EM ORLANDO VILLAS BOAS': ['1.7','CENTRO'],
+  'EM PEREIRA PASSOS': ['1.10','RIO COMPRIDO'],
+  'EM PORTUGAL': ['1.4','SÃO CRISTÓVÃO'],
+  'EM PROFESSOR WALTER CARLOS DE MAGALHÃES FRAENKEL': ['1.1','CAJU'],
+  'EM PROFESSORA LAURA SYLVIA MENDES PEREIRA': ['1.1','CAJU'],
+  'EM RIVADAVIA CORRÊA': ['1.6','CIDADE NOVA'],
+  'EM SANTA CATARINA': ['1.7','SANTA TERESA'],
+  'EM TIA CIATA': ['1.7','CENTRO'],
+  'EM TIRADENTES': ['1.7','CENTRO'],
+  'EM URUGUAI': ['1.2','BENFICA'],
+  'EM VICENTE LICINIO CARDOSO': ['1.6','SAÚDE'],
+};
+
+const MICROAREA_NOMES = {
+  '0': 'Sem microárea definida',
+  '1.1': 'Caju',
+  '1.2': 'Benfica',
+  '1.3': 'Mangueira',
+  '1.4': 'São Cristóvão',
+  '1.5': 'Santo Cristo',
+  '1.6': 'Gamboa / Saúde',
+  '1.7': 'Centro',
+  '1.8': 'Catumbi / Santa Teresa',
+  '1.9': 'Cidade Nova / Estácio',
+  '1.10': 'Rio Comprido',
+  '1.11': 'Santa Teresa Alta / Rio Comprido',
+};
+
+let dadosBrutos = [];
+let dadosAgregados = [];
+let ultimaAtualizacao = null;
+
+function parseCSV(texto) {
+  const linhas = texto.trim().split('\n');
+  const cabecalho = linhas[0].split(',').map(c => c.replace(/"/g,'').trim());
+  return linhas.slice(1).map(linha => {
+    const vals = [];
+    let cur = '', dentroAspas = false;
+    for (let i = 0; i < linha.length; i++) {
+      if (linha[i] === '"') { dentroAspas = !dentroAspas; continue; }
+      if (linha[i] === ',' && !dentroAspas) { vals.push(cur.trim()); cur = ''; continue; }
+      cur += linha[i];
+    }
+    vals.push(cur.trim());
+    const obj = {};
+    cabecalho.forEach((c, i) => obj[c] = vals[i] || '');
+    return obj;
+  });
+}
+
+function agregarDados(rows) {
+  const mapa = {};
+  rows.forEach(r => {
+    const origem = r['Escola_Origem'] || '';
+    const grup = r['Grupamento'] || '';
+    const edEsp = (r['Educacao_Especial'] || '').toUpperCase() === 'SIM';
+    const irmao = (r['Irmao_1a_Opcao'] || '').toUpperCase() === 'SIM';
+    const opcoes = [
+      r['1a_Opcao'], r['2a_Opcao'], r['3a_Opcao'], r['4a_Opcao'], r['5a_Opcao']
+    ];
+    const [micro, bairro] = MICROAREAS[origem] || ['?','?'];
+
+    opcoes.forEach((dest, idx) => {
+      if (!dest) return;
+      const chave = `${origem}||${grup}||${dest}`;
+      if (!mapa[chave]) {
+        mapa[chave] = {
+          origem, grup, destino: dest, micro, bairro,
+          op: [0,0,0,0,0], edEsp: 0, irmao: 0
+        };
+      }
+      mapa[chave].op[idx]++;
+      if (idx === 0) {
+        if (edEsp) mapa[chave].edEsp++;
+        if (irmao) mapa[chave].irmao++;
+      }
+    });
+  });
+  return Object.values(mapa);
+}
+
+async function carregarDados() {
+  const btn = document.getElementById('btn-atualizar');
+  const badge = document.getElementById('status-badge');
+  btn.disabled = true;
+  badge.textContent = 'Atualizando…';
+
+  try {
+    const res = await fetch(CSV_URL + '&t=' + Date.now());
+    const texto = await res.text();
+    dadosBrutos = parseCSV(texto);
+    dadosAgregados = agregarDados(dadosBrutos);
+    ultimaAtualizacao = new Date();
+    badge.textContent = `${dadosBrutos.length} respostas · ${ultimaAtualizacao.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'})}`;
+    popularFiltros();
+    aplicarFiltros();
+  } catch(e) {
+    badge.textContent = 'Erro ao carregar';
+    document.getElementById('conteudo').innerHTML = `
+      <div class="estado">
+        <div class="icon">⚠️</div>
+        <p>Não foi possível carregar os dados.<br>Verifique se a planilha está publicada e tente novamente.</p>
+      </div>`;
+  }
+  btn.disabled = false;
+}
+
+function popularFiltros() {
+  const microareas = [...new Set(dadosAgregados.map(d => d.micro))].filter(Boolean).sort((a,b) => {
+    const n = x => parseFloat(x) || 999;
+    return n(a) - n(b);
+  });
+  const bairros = [...new Set(dadosAgregados.map(d => d.bairro))].filter(Boolean).sort();
+  const origens = [...new Set(dadosAgregados.map(d => d.origem))].filter(Boolean).sort();
+  const grupamentos = [...new Set(dadosAgregados.map(d => d.grup))].filter(Boolean).sort();
+  const destinos = [...new Set(dadosAgregados.map(d => d.destino))].filter(Boolean).sort();
+
+  const preencher = (id, lista, fmt) => {
+    const sel = document.getElementById(id);
+    const val = sel.value;
+    sel.innerHTML = '<option value="">Todos</option>' +
+      lista.map(v => `<option value="${v}"${v===val?' selected':''}>${fmt ? fmt(v) : v}</option>`).join('');
+  };
+
+  preencher('f-microarea', microareas, v => `${v} — ${MICROAREA_NOMES[v] || v}`);
+  preencher('f-bairro', bairros);
+  preencher('f-origem', origens);
+  preencher('f-grupamento', grupamentos);
+  preencher('f-destino', destinos);
+}
+
+function aplicarFiltros() {
+  const fMicro = document.getElementById('f-microarea').value;
+  const fBairro = document.getElementById('f-bairro').value;
+  const fOrigem = document.getElementById('f-origem').value;
+  const fGrup = document.getElementById('f-grupamento').value;
+  const fDest = document.getElementById('f-destino').value;
+
+  let dados = dadosAgregados.filter(d =>
+    (!fMicro || d.micro === fMicro) &&
+    (!fBairro || d.bairro === fBairro) &&
+    (!fOrigem || d.origem === fOrigem) &&
+    (!fGrup || d.grup === fGrup) &&
+    (!fDest || d.destino === fDest)
+  );
+
+  // Resumo
+  const totalRespostas1a = dados.reduce((s,d) => s + d.op[0], 0);
+  const totalEdEsp = dados.reduce((s,d) => s + d.edEsp, 0);
+  const totalIrmao = dados.reduce((s,d) => s + d.irmao, 0);
+  const escorigens = new Set(dados.map(d => d.origem)).size;
+  document.getElementById('resumo-bar').innerHTML = `
+    <span><strong>${totalRespostas1a}</strong> escolhas como 1ª opção</span>
+    <span class="resumo-chip">🏫 ${escorigens} escola${escorigens!==1?'s':''} de origem</span>
+    <span class="resumo-chip" style="background:#fff3eb;color:#c05621">⭐ ${totalEdEsp} Ed. Especial</span>
+    <span class="resumo-chip" style="background:#e8f5ee;color:#2d7a4f">👥 ${totalIrmao} com irmão</span>
+  `;
+
+  renderizar(dados);
+}
+
+function renderizar(dados) {
+  const cont = document.getElementById('conteudo');
+  if (!dados.length) {
+    cont.innerHTML = `<div class="estado"><div class="icon">🔍</div><p>Nenhum resultado com os filtros selecionados.</p></div>`;
+    return;
+  }
+
+  // Agrupar por microárea → escola de origem
+  const porMicro = {};
+  dados.forEach(d => {
+    if (!porMicro[d.micro]) porMicro[d.micro] = {};
+    const chave = `${d.origem}||${d.grup}||${d.bairro}`;
+    if (!porMicro[d.micro][chave]) porMicro[d.micro][chave] = [];
+    porMicro[d.micro][chave].push(d);
+  });
+
+  const microOrdem = Object.keys(porMicro).sort((a,b) => {
+    const n = x => parseFloat(x) || 999;
+    return n(a) - n(b);
+  });
+
+  let html = '';
+  microOrdem.forEach(micro => {
+    const escolas = porMicro[micro];
+    const nomeM = MICROAREA_NOMES[micro] || micro;
+    const nCards = Object.keys(escolas).length;
+
+    html += `
+      <div class="microarea-bloco">
+        <div class="microarea-titulo">
+          <span class="microarea-badge">Microárea ${micro}</span>
+          <span class="microarea-nome">${nomeM}</span>
+          <span class="microarea-count">${nCards} escola${nCards!==1?'s':''} de origem</span>
+        </div>`;
+
+    Object.entries(escolas).forEach(([chave, destinos]) => {
+      const [origem, grup, bairro] = chave.split('||');
+      // Ordenar destinos por 1ª opção desc
+      destinos.sort((a,b) => b.op[0] - a.op[0]);
+
+      const linhas = destinos.map(d => {
+        const ops = d.op.map((v, i) => {
+          if (v === 0) return i === 0 ? `<td class="num n-zero">0</td>` : `<td class="num n-dash">—</td>`;
+          const cls = i === 0 ? 'n1' : '';
+          return `<td class="num ${cls}">${v}</td>`;
+        }).join('');
+
+        const edChip = d.edEsp > 0
+          ? `<span class="pri-chip pri-espec">⭐ ${d.edEsp}</span>`
+          : `<span class="pri-zero">—</span>`;
+        const irChip = d.irmao > 0
+          ? `<span class="pri-chip pri-irmao">👥 ${d.irmao}</span>`
+          : `<span class="pri-zero">—</span>`;
+
+        return `<tr>
+          <td class="destino-nome">${d.destino}</td>
+          ${ops}
+          <td>${edChip}</td>
+          <td>${irChip}</td>
+        </tr>`;
+      }).join('');
+
+      html += `
+        <div class="escola-card">
+          <div class="escola-header">
+            <span class="escola-nome">🏫 ${origem}</span>
+            <span class="tag tag-grup">${grup}</span>
+            <span class="tag tag-bairro">${bairro}</span>
+          </div>
+          <div class="tabela-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Escola de Destino</th>
+                  <th class="num">1ª</th>
+                  <th class="num">2ª</th>
+                  <th class="num">3ª</th>
+                  <th class="num">4ª</th>
+                  <th class="num">5ª</th>
+                  <th>Ed. Especial</th>
+                  <th>Irmão</th>
+                </tr>
+              </thead>
+              <tbody>${linhas}</tbody>
+            </table>
+          </div>
+        </div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  cont.innerHTML = html;
+}
+
+function limparFiltros() {
+  ['f-microarea','f-bairro','f-origem','f-grupamento','f-destino'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  aplicarFiltros();
+}
+
+// Iniciar
+carregarDados();
+</script>
+</body>
+</html>
